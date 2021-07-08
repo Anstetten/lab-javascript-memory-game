@@ -26,6 +26,8 @@ const cards = [
 ];
 
 const memoryGame = new MemoryGame(cards);
+const clickedScore= document.getElementById("pairs-clicked");
+const pairScore= document.getElementById("pairs-guessed");
 
 window.addEventListener('load', (event) => {
   let html = '';
@@ -45,7 +47,44 @@ window.addEventListener('load', (event) => {
   document.querySelectorAll('.card').forEach((card) => {
     card.addEventListener('click', () => {
       // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+      if (memoryGame.pickedCards.length<1){
+        if(!card.classList.contains('blocked'))
+        {memoryGame.pickedCards.push(card);
+        card.classList.add('turned');}
+      }
+
+
+      else{
+        
+        if(!card.classList.contains('blocked')){
+          card.classList.add('turned');
+        memoryGame.pickedCards.push(card);
+        
+
+        let isItSame=memoryGame.checkIfPair((memoryGame.pickedCards[0].dataset.cardName),(memoryGame.pickedCards[1].dataset.cardName));
+        clickedScore.innerText=memoryGame.pairsClicked;
+        if (isItSame){
+          pairScore.innerText=memoryGame.pairsGuessed;
+          document.querySelectorAll(".turned").forEach((card)=>{card.classList.add("blocked")});
+          memoryGame.pickedCards=[];
+
+         if (memoryGame.checkIfFinished()){window.alert("You woon")};
+        }
+
+        else{
+          memoryGame.pickedCards=[];
+          setTimeout(function(){
+
+            document.querySelectorAll(".turned:not(.blocked)").forEach((card)=>{card.classList.remove("turned")});
+          },500);
+          
+        }
+        }
+        
+
+      }
+
+      
     });
   });
 });
